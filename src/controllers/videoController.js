@@ -1,4 +1,4 @@
-import Video from "../models/Video";
+import Video  from "../models/Video";
 // ======================================
 export const watch = async (req, res) => {
   const { id } = req.params;
@@ -9,7 +9,7 @@ export const watch = async (req, res) => {
   return res.render("404", { pageTitle: "Not Found Video" });
 };
 export const home = async (req, res) => {
-  const videos = await Video.find({});
+  const videos = await Video.find({}).sort({createdAt: "asc"});
   if (videos) {
     return res.render("home", { pageTitle: "Home", videos })
   }
@@ -26,8 +26,7 @@ export const postEdit = async (req, res) => {
   await Video.findByIdAndUpdate(id, {
     title,
     description,
-    hashtags: hashtags.split(',')
-    .map((word) => (word.startsWith('#') ? word : `#${word}`)),
+    hashtags: Video.formatHashtags(hashtags),
   });
   return res.redirect(`/videos/${id}`);
 };
@@ -40,8 +39,11 @@ export const getEdit = async (req, res) => {
   return res.render("edit", { pageTitle :  `Edit : ${video.title}`, video});
 }
 // ======================================
-export const deleteVideo = (req, res) => {
-  return res.send("deleteVideo")
+export const deleteVideo = async (req, res) => {
+  const { id } = req.params;
+  await Video.findByIdAndDelete(id);
+
+  return res.redirect("/")
 }
 
 export const getUpload = (req, res) => {
@@ -54,7 +56,7 @@ export const postUpload = async (req, res) => {
       await Video.create({
       title: title,
       description : description,
-      hashtags,
+      hashtags: Video.formatHashtags(hashtags),
     })
     return res.redirect("/");
   } catch (error) {
@@ -66,3 +68,17 @@ export const postUpload = async (req, res) => {
   }
 }
 // ======================================
+export const search =  async (req, res) => {
+  const { keyword } = req.query;
+  let videos = [];
+  if (keyword) {
+    videos = await Video.find({
+      title: {
+        $regex: new RegExp(`${keyword}$`, "i"),
+      },
+    });
+  }
+  
+  return res.render("search", { pageTitle : "Search", videos });
+ 
+}
