@@ -1,4 +1,5 @@
 import User from "../models/User";
+
 // ========================================
 export const getJoin = (req, res) => {
   res.render("join", { pageTitle: "Create Account" });
