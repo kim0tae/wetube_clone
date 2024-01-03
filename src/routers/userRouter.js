@@ -8,5 +8,4 @@ userRouter.get("/remove", remove)
 userRouter.get("/:id", see)
 userRouter.get("/logout", logout)
 
-
 export default userRouter;
