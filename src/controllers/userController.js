@@ -30,7 +30,21 @@ export const postJoin = async (req, res) => {
 // ========================================
 export const edit = (req, res) => res.send("Edit Users")
 export const remove = (req, res) => res.send("Remove Users")
-export const login = (req, res) => res.send("login")
+export const getLogin = (req, res) =>  {
+  return res.render("login", { pageTitle: "Login" });
+}
+export const postLogin = async (req, res) =>  {
+  const { username, password } = req.body;
+  const exists = await User.exists({ username });
+  if (!exists) {
+    return res.status(400).render("login", { 
+      pageTitle: "Login", 
+      errorMessage: "An account with username does not exists." 
+    });
+  }
+  
+  res.end();
+}
 export const see = (req, res) => res.send("see")
 export const logout = (req, res) => res.send("logout")
 
