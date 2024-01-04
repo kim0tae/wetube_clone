@@ -5,7 +5,6 @@ import bcrypt from "bcrypt";
 export const getJoin = (req, res) => {
   res.render("join", { pageTitle: "Create Account" });
 }
-
 export const postJoin = async (req, res) => {
   const { name, username, email, password, password2, location } = req.body;
   const pageTitle = "Join";
@@ -29,7 +28,13 @@ export const postJoin = async (req, res) => {
   return res.redirect("/login");
 }
 // ========================================
-export const edit = (req, res) => res.send("Edit Users")
+export const getEdit = (req, res) => {
+  return res.render("edit-profile", { pageTitle: "Edit Profile", user: req.session.user});
+}
+export const postEdit = (req, res) => {
+  return res.render("edit-profile");
+}
+// ========================================
 export const remove = (req, res) => res.send("Remove Users")
 export const getLogin = (req, res) =>  {
   return res.render("login", { pageTitle: "Login" });
