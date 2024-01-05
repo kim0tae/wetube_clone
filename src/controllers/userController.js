@@ -160,7 +160,34 @@ export const finishGithubLogin = async (req, res) => {
   } else {
     return res.redirect("/login");
   }
-  
-//  return res.render(finalUrl);
+}
+// ========================================
+export const getChangePassword = (req, res) => {
+  if (req.session.socialOnly === true) {
+    return res.redirect("/");
+  }
+  return res.render("users/change-password", { pageTitle: "Change Password" });
 }
 
+export const postChangePassword = async (req, res) => {
+  // send notification change password alert
+  const  {
+    session : { user: { _id, password } },
+    body: { oldPassword, newPassword, newPasswordConfirmation },
+  } = req;
+  
+  const ok = await bcrypt.compare(oldPassword, password);
+  if (!ok) {
+    return res.status(400).render("users/change-password", { pageTitle: "Change Password", errorMessage: "The current password is incorrect" });
+  }
+
+  if (newPassword !== newPasswordConfirmation) {
+    return res.status(400).render("users/change-password", { pageTitle: "Change Password", errorMessage: "The password does not match the confirmation" });
+  }
+  const user = await User.findById(_id);
+  user.password = newPassword;
+  user.save();
+  req.session.user.password = user.password;
+  
+  return res.redirect("/users/logout");
+}
