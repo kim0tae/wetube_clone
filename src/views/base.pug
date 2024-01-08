@@ -1,32 +1,31 @@
 doctype html
-html(lang='ko')
-  head 
-    title #{pageTitle} | #{siteName}
-    link(rel="stylesheet" href="https://unpkg.com/mvp.css")
-  body 
-    header 
+html(lang="ko")
+  head
+      title #{pageTitle} | #{siteName}
+      link(rel="stylesheet" href="https://unpkg.com/mvp.css")
+  body
+    header
       h1=pageTitle
-      nav  
-        ul 
-          li 
+      nav
+        ul
+          li
             a(href="/") Home
           if loggedIn
-            li 
-              a(href="/users/logout") Log Out
-            li 
-              a(href="/users/edit") Edit Profile 
             li
-              a(href="/my-profile") #{loggedInUser.name}의 Profile
-            li 
-              a(href="/videos/upload") Upload Video
-          else 
-            li 
-              a(href="/join") Join
-            li 
-              a(href="/login") Login 
-          li 
-            a(href="/search") Search 
-         
+                a(href="/videos/upload") Upload Video
+            li
+                a(href=`/users/${loggedInUser._id}`) My Profile
+            li
+                a(href="/users/edit") Edit Profile
+            li
+                a(href="/users/logout")  Log Out
+          else
+            li
+                a(href="/join")  Join
+            li
+                a(href="/login")  Login                        
+          li
+              a(href="/search") Search
     main
       block content
-  include partials/footer.pug
+include partials/footer
